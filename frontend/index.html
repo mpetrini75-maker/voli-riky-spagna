@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=7.0">
+  <link rel="stylesheet" href="css/style.css?v=8.0">
 </head>
 <body>
   <div class="app-container">
@@ -110,12 +110,17 @@
             <div class="filter-group">
               <label class="filter-title" for="month-select">Mese:</label>
               <select id="month-select" class="custom-select" onchange="applyFilters()">
-                <option value="all">Tutti i mesi disponibili</option>
+                <option value="all">Tutti i mesi disponibili (fino a Giu 2027)</option>
                 <option value="2026-09">Settembre 2026</option>
                 <option value="2026-10">Ottobre 2026</option>
                 <option value="2026-11">Novembre 2026</option>
                 <option value="2026-12">Dicembre 2026</option>
                 <option value="2027-01">Gennaio 2027</option>
+                <option value="2027-02">Febbraio 2027</option>
+                <option value="2027-03">Marzo 2027</option>
+                <option value="2027-04">Aprile 2027</option>
+                <option value="2027-05">Maggio 2027</option>
+                <option value="2027-06">Giugno 2027</option>
               </select>
             </div>
 
@@ -278,6 +283,10 @@
                 <button type="button" class="preset-pill" onclick="selectCalPreset('ognissanti')">Tutti i Santi (29 Ott – 2 Nov)</button>
                 <button type="button" class="preset-pill" onclick="selectCalPreset('immacolata')">Immacolata (4 – 8 Dic)</button>
                 <button type="button" class="preset-pill" onclick="selectCalPreset('natale')">Natale (24 – 28 Dic)</button>
+                <button type="button" class="preset-pill" onclick="selectCalPreset('pasqua_2027')">Pasqua (26 – 30 Mar 2027)</button>
+                <button type="button" class="preset-pill" onclick="selectCalPreset('aprile_2027')">25 Aprile (23 – 26 Apr 2027)</button>
+                <button type="button" class="preset-pill" onclick="selectCalPreset('maggio_2027')">1° Maggio (30 Apr – 3 Mag 2027)</button>
+                <button type="button" class="preset-pill" onclick="selectCalPreset('giugno_2027')">2 Giugno (29 Mag – 2 Giu 2027)</button>
               </div>
 
               <!-- Navigazione Mese -->
@@ -339,6 +348,6 @@
     </footer>
   </div>
 
-  <script src="js/app.js?v=7.0"></script>
+  <script src="js/app.js?v=8.0"></script>
 </body>
 </html>

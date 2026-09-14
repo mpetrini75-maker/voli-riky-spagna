@@ -190,6 +190,18 @@ function selectCalPreset(preset) {
   } else if (preset === 'natale') {
     calDateOut = '2026-12-24';
     calDateIn = '2026-12-28';
+  } else if (preset === 'pasqua_2027') {
+    calDateOut = '2027-03-26';
+    calDateIn = '2027-03-30';
+  } else if (preset === 'aprile_2027') {
+    calDateOut = '2027-04-23';
+    calDateIn = '2027-04-26';
+  } else if (preset === 'maggio_2027') {
+    calDateOut = '2027-04-30';
+    calDateIn = '2027-05-03';
+  } else if (preset === 'giugno_2027') {
+    calDateOut = '2027-05-29';
+    calDateIn = '2027-06-02';
   }
 
   if (calDateOut) {
@@ -457,12 +469,12 @@ function renderFlights(trips) {
       `;
     } else {
       actionButtonsHtml = `
-        <div class="card-actions" style="display: flex; flex-direction: column; gap: 0.5rem;">
-          <div style="display: flex; gap: 0.5rem;">
-            <a href="${t.booking_url_out || t.booking_url}" target="_blank" rel="noopener noreferrer" class="cta-button" style="flex: 1; padding: 0.65rem 0.5rem; font-size: 0.85rem; text-align: center;">
+        <div class="card-actions">
+          <div class="split-buttons-group">
+            <a href="${t.booking_url_out || t.booking_url}" target="_blank" rel="noopener noreferrer" class="cta-button btn-split-out">
               1. Andata: ${outShort} (${t.price_out} €) →
             </a>
-            <a href="${t.booking_url_in || t.booking_url}" target="_blank" rel="noopener noreferrer" class="cta-button" style="flex: 1; padding: 0.65rem 0.5rem; font-size: 0.85rem; text-align: center; background: linear-gradient(135deg, #059669, #10b981);">
+            <a href="${t.booking_url_in || t.booking_url}" target="_blank" rel="noopener noreferrer" class="cta-button btn-split-in">
               2. Rientro: ${inShort} (${t.price_in} €) →
             </a>
           </div>

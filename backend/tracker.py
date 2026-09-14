@@ -40,12 +40,13 @@ AIRLINE_MAP = {
     "BGY-VLC": {"direct": ["Ryanair"], "monopoly": True, "notes": "Monopolio assoluto Ryanair da Bergamo Orio al Serio."}
 }
 
-def generate_date_pairs(weeks_ahead: int = 10) -> List[Dict[str, Any]]:
+def generate_date_pairs(weeks_ahead: int = 42) -> List[Dict[str, Any]]:
     today = datetime.today().date()
     pairs = []
 
     curr = today + timedelta(days=2)
-    end_date = today + timedelta(days=weeks_ahead * 7)
+    # Copre fino al 30 Giugno 2027
+    end_date = max(today + timedelta(days=weeks_ahead * 7), date(2027, 6, 30))
 
     while curr <= end_date:
         weekday = curr.weekday()
@@ -114,7 +115,7 @@ class FlightTracker:
         except Exception:
             return None
 
-    def scan_all(self, force_refresh: bool = False, max_weeks: int = 10) -> Dict[str, Any]:
+    def scan_all(self, force_refresh: bool = False, max_weeks: int = 42) -> Dict[str, Any]:
         if not force_refresh and os.path.exists(CACHE_FILE):
             try:
                 with open(CACHE_FILE, "r", encoding="utf-8") as f:

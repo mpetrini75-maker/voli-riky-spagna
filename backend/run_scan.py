@@ -6,7 +6,7 @@ from tracker import FlightTracker
 def main():
     print("Inizializzazione FlightTracker per Marco...")
     tracker = FlightTracker()
-    data = tracker.scan_all(force_refresh=True, max_weeks=8)
+    data = tracker.scan_all(force_refresh=True, max_weeks=42)
     print("Scansione completata!")
     print(f"Totale combinazioni trovate: {data['stats']['total_options_found']}")
     print(f"Prezzo piu basso trovato: {data['stats']['cheapest_price']} EUR")
