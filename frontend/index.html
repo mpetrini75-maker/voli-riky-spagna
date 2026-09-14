@@ -223,21 +223,39 @@
       <!-- SECTION 4: CUSTOM VACATION CALCULATOR -->
       <section id="section-custom" class="tab-section">
         <div class="custom-intro glass-box">
-          <h2>Calcolatore Date Libere (Partenza & Rientro a Bergamo)</h2>
-          <p>Imposta qualsiasi data per calcolare il volo da Bergamo verso Alicante o Valencia:</p>
+          <h2>Calcolatore Date Libere & Valutazione Tratta</h2>
+          <p>Imposta qualsiasi data per calcolare i voli diretti Ryanair sia da Bergamo verso la Spagna, sia dalla Spagna verso Bergamo:</p>
+
+          <!-- Selettore Direzione Viaggio Bidirezionale -->
+          <div class="direction-selector-wrapper">
+            <span class="direction-label">Direzione del Viaggio:</span>
+            <div class="direction-toggle-group">
+              <button type="button" id="dir-btn-bgy" class="dir-toggle-btn active" onclick="setTripDirection('BGY_TO_ES')">
+                <span class="dir-title">Bergamo → Spagna</span>
+                <span class="dir-sub">Marco in visita da Riky (A/R da Bergamo)</span>
+              </button>
+              <button type="button" id="dir-btn-swap" class="dir-swap-btn" onclick="toggleTripDirection()" title="Inverti direzione del viaggio">
+                ⇄
+              </button>
+              <button type="button" id="dir-btn-es" class="dir-toggle-btn" onclick="setTripDirection('ES_TO_BGY')">
+                <span class="dir-title">Spagna → Bergamo</span>
+                <span class="dir-sub">Riky in visita a Bergamo (A/R dalla Spagna)</span>
+              </button>
+            </div>
+          </div>
 
           <form id="custom-search-form" class="custom-form" onsubmit="executeCustomSearch(event)">
             <div class="form-grid-custom">
               <!-- Andata -->
-              <div class="form-group">
-                <label for="custom-orig-out">Partenza (Andata):</label>
+              <div class="form-group" id="group-orig-out">
+                <label for="custom-orig-out" id="label-orig-out">Partenza da Bergamo:</label>
                 <select id="custom-orig-out" class="custom-select" disabled>
                   <option value="BGY" selected>Bergamo Orio al Serio (BGY)</option>
                 </select>
               </div>
 
-              <div class="form-group">
-                <label for="custom-dest-out">Arrivo in Spagna:</label>
+              <div class="form-group" id="group-dest-out">
+                <label for="custom-dest-out" id="label-dest-out">Arrivo in Spagna:</label>
                 <select id="custom-dest-out" class="custom-select">
                   <option value="ALC" selected>Alicante (ALC)</option>
                   <option value="VLC">Valencia (VLC)</option>
@@ -251,16 +269,16 @@
               </div>
 
               <!-- Ritorno -->
-              <div class="form-group">
-                <label for="custom-orig-in">Ripartenza dalla Spagna:</label>
+              <div class="form-group" id="group-orig-in">
+                <label for="custom-orig-in" id="label-orig-in">Ripartenza dalla Spagna:</label>
                 <select id="custom-orig-in" class="custom-select">
                   <option value="ALC">Alicante (ALC)</option>
                   <option value="VLC" selected>Valencia (VLC)</option>
                 </select>
               </div>
 
-              <div class="form-group">
-                <label for="custom-dest-in">Rientro (Destinazione):</label>
+              <div class="form-group" id="group-dest-in">
+                <label for="custom-dest-in" id="label-dest-in">Rientro a Bergamo:</label>
                 <select id="custom-dest-in" class="custom-select" disabled>
                   <option value="BGY" selected>Bergamo Orio al Serio (BGY)</option>
                 </select>
@@ -327,7 +345,7 @@
 
             <div style="margin-top: 1.5rem; text-align: right;">
               <button type="submit" class="cta-button" id="btn-search-custom" style="display: inline-flex; width: auto; padding: 0.85rem 2.25rem;">
-                Calcola Prezzo Volo da Bergamo →
+                Calcola Volo Bergamo → Spagna →
               </button>
             </div>
           </form>
@@ -348,6 +366,6 @@
     </footer>
   </div>
 
-  <script src="js/app.js?v=8.1"></script>
+  <script src="js/app.js?v=8.2"></script>
 </body>
 </html>

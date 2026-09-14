@@ -43,6 +43,118 @@ document.addEventListener('DOMContentLoaded', () => {
   loadData();
 });
 
+// Direzione del Viaggio nel Calcolatore (BGY_TO_ES = Bergamo->Spagna, ES_TO_BGY = Spagna->Bergamo)
+let currentTripDirection = 'BGY_TO_ES';
+
+function setTripDirection(dir) {
+  currentTripDirection = dir;
+  updateDirectionUI();
+}
+
+function toggleTripDirection() {
+  currentTripDirection = (currentTripDirection === 'BGY_TO_ES') ? 'ES_TO_BGY' : 'BGY_TO_ES';
+  updateDirectionUI();
+}
+
+function updateDirectionUI() {
+  const btnBgy = document.getElementById('dir-btn-bgy');
+  const btnEs = document.getElementById('dir-btn-es');
+  const labelOrigOut = document.getElementById('label-orig-out');
+  const selOrigOut = document.getElementById('custom-orig-out');
+  const labelDestOut = document.getElementById('label-dest-out');
+  const selDestOut = document.getElementById('custom-dest-out');
+  const labelOrigIn = document.getElementById('label-orig-in');
+  const selOrigIn = document.getElementById('custom-orig-in');
+  const labelDestIn = document.getElementById('label-dest-in');
+  const selDestIn = document.getElementById('custom-dest-in');
+  const btnSubmit = document.getElementById('btn-search-custom');
+
+  if (currentTripDirection === 'BGY_TO_ES') {
+    if (btnBgy) btnBgy.classList.add('active');
+    if (btnEs) btnEs.classList.remove('active');
+
+    // Andata: BGY -> Spagna
+    if (labelOrigOut) labelOrigOut.textContent = 'Partenza da Bergamo:';
+    if (selOrigOut) {
+      selOrigOut.disabled = true;
+      selOrigOut.innerHTML = '<option value="BGY" selected>Bergamo Orio al Serio (BGY)</option>';
+    }
+
+    if (labelDestOut) labelDestOut.textContent = 'Arrivo in Spagna:';
+    if (selDestOut) {
+      selDestOut.disabled = false;
+      const prevVal = selDestOut.value || 'ALC';
+      selDestOut.innerHTML = `
+        <option value="ALC" ${prevVal === 'ALC' ? 'selected' : ''}>Alicante (ALC)</option>
+        <option value="VLC" ${prevVal === 'VLC' ? 'selected' : ''}>Valencia (VLC)</option>
+      `;
+    }
+
+    // Ritorno: Spagna -> BGY
+    if (labelOrigIn) labelOrigIn.textContent = 'Ripartenza dalla Spagna:';
+    if (selOrigIn) {
+      selOrigIn.disabled = false;
+      const prevVal = selOrigIn.value || 'VLC';
+      selOrigIn.innerHTML = `
+        <option value="ALC" ${prevVal === 'ALC' ? 'selected' : ''}>Alicante (ALC)</option>
+        <option value="VLC" ${prevVal === 'VLC' ? 'selected' : ''}>Valencia (VLC)</option>
+      `;
+    }
+
+    if (labelDestIn) labelDestIn.textContent = 'Rientro a Bergamo:';
+    if (selDestIn) {
+      selDestIn.disabled = true;
+      selDestIn.innerHTML = '<option value="BGY" selected>Bergamo Orio al Serio (BGY)</option>';
+    }
+
+    if (btnSubmit) {
+      btnSubmit.textContent = 'Calcola Volo Bergamo → Spagna →';
+    }
+  } else {
+    // ES_TO_BGY: Spagna -> Bergamo -> Spagna
+    if (btnBgy) btnBgy.classList.remove('active');
+    if (btnEs) btnEs.classList.add('active');
+
+    // Andata: Spagna -> BGY
+    if (labelOrigOut) labelOrigOut.textContent = 'Partenza dalla Spagna:';
+    if (selOrigOut) {
+      selOrigOut.disabled = false;
+      const prevVal = selOrigOut.value && selOrigOut.value !== 'BGY' ? selOrigOut.value : 'ALC';
+      selOrigOut.innerHTML = `
+        <option value="ALC" ${prevVal === 'ALC' ? 'selected' : ''}>Alicante (ALC)</option>
+        <option value="VLC" ${prevVal === 'VLC' ? 'selected' : ''}>Valencia (VLC)</option>
+      `;
+    }
+
+    if (labelDestOut) labelDestOut.textContent = 'Arrivo a Bergamo:';
+    if (selDestOut) {
+      selDestOut.disabled = true;
+      selDestOut.innerHTML = '<option value="BGY" selected>Bergamo Orio al Serio (BGY)</option>';
+    }
+
+    // Ritorno: BGY -> Spagna
+    if (labelOrigIn) labelOrigIn.textContent = 'Ripartenza da Bergamo:';
+    if (selOrigIn) {
+      selOrigIn.disabled = true;
+      selOrigIn.innerHTML = '<option value="BGY" selected>Bergamo Orio al Serio (BGY)</option>';
+    }
+
+    if (labelDestIn) labelDestIn.textContent = 'Rientro in Spagna:';
+    if (selDestIn) {
+      selDestIn.disabled = false;
+      const prevVal = selDestIn.value && selDestIn.value !== 'BGY' ? selDestIn.value : 'ALC';
+      selDestIn.innerHTML = `
+        <option value="ALC" ${prevVal === 'ALC' ? 'selected' : ''}>Alicante (ALC)</option>
+        <option value="VLC" ${prevVal === 'VLC' ? 'selected' : ''}>Valencia (VLC)</option>
+      `;
+    }
+
+    if (btnSubmit) {
+      btnSubmit.textContent = 'Calcola Volo Spagna → Bergamo →';
+    }
+  }
+}
+
 function setupEventListeners() {
   // Pillole filtro pattern
   const patternPills = document.querySelectorAll('#pattern-pills .pill');
@@ -65,6 +177,8 @@ function setupEventListeners() {
       applyFilters();
     });
   });
+
+  updateDirectionUI();
 }
 
 // Inizializzazione Calendario Grafico
@@ -675,8 +789,11 @@ async function executeCustomSearch(e) {
   const btn = document.getElementById('btn-search-custom');
   const resultBox = document.getElementById('custom-result');
 
-  const destOut = document.getElementById('custom-dest-out').value;
-  const origIn = document.getElementById('custom-orig-in').value;
+  const isFromBgy = (currentTripDirection === 'BGY_TO_ES');
+  const origOut = isFromBgy ? 'BGY' : (document.getElementById('custom-orig-out').value || 'ALC');
+  const destOut = isFromBgy ? (document.getElementById('custom-dest-out').value || 'ALC') : 'BGY';
+  const origIn = isFromBgy ? (document.getElementById('custom-orig-in').value || 'VLC') : 'BGY';
+  const destIn = isFromBgy ? 'BGY' : (document.getElementById('custom-dest-in').value || 'ALC');
   const dateOut = document.getElementById('custom-date-out').value;
   const dateIn = document.getElementById('custom-date-in').value;
 
@@ -693,10 +810,10 @@ async function executeCustomSearch(e) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        origin_out: 'BGY',
+        origin_out: origOut,
         dest_out: destOut,
         origin_in: origIn,
-        dest_in: 'BGY',
+        dest_in: destIn,
         date_out: dateOut,
         date_in: dateIn
       })
@@ -706,8 +823,9 @@ async function executeCustomSearch(e) {
     resultBox.style.display = 'block';
 
     if (!data.found || !data.trip) {
+      const departureName = isFromBgy ? 'da Bergamo' : `dalla Spagna (${origOut})`;
       resultBox.innerHTML = `
-        <p style="color: #ef4444; font-weight: 600;">Nessun volo Ryanair trovato da Bergamo per le date selezionate.</p>
+        <p style="color: #ef4444; font-weight: 600;">Nessun volo Ryanair trovato ${departureName} per le date selezionate.</p>
         <p style="color: #9ca3af; margin-top: 0.3rem;">Prova a variare la data di un giorno.</p>
       `;
     } else {
@@ -717,20 +835,58 @@ async function executeCustomSearch(e) {
       const outShort = getShortDateWithDay(t.date_out);
       const inShort = getShortDateWithDay(t.date_in);
 
+      const isFromBgyResult = (t.origin_out === 'BGY');
+      const titleText = isFromBgyResult
+        ? `Bergamo → ${t.dest_out_name} • Rientro da ${t.origin_in_name}`
+        : `${t.origin_out_name} → Bergamo • Rientro a ${t.dest_in_name}`;
+      
+      const dirBadgeText = isFromBgyResult
+        ? 'Marco in visita da Riky'
+        : 'Riky in visita a Bergamo';
+
+      const legOutText = isFromBgyResult
+        ? `Bergamo Orio (BGY) → ${t.dest_out_name} (${t.dest_out})`
+        : `${t.origin_out_name} (${t.origin_out}) → Bergamo Orio (BGY)`;
+
+      const legInText = isFromBgyResult
+        ? `${t.origin_in_name} (${t.origin_in}) → Bergamo Orio (BGY)`
+        : `Bergamo Orio (BGY) → ${t.dest_in_name} (${t.dest_in})`;
+
       const comparatorBtn = t.comparator_url ? `
         <a href="${t.comparator_url}" target="_blank" rel="noopener noreferrer" class="secondary-button" style="margin-top: 0.5rem;">
           Verifica Orari su Google Flights →
         </a>
       ` : '';
 
+      let bookingActionHtml = '';
+      if (t.is_pure_roundtrip) {
+        bookingActionHtml = `
+          <a href="${t.booking_url}" target="_blank" rel="noopener noreferrer" class="cta-button">
+            Prenota A/R Ryanair (${outShort} → ${inShort}) • ${t.total_price} € →
+          </a>
+        `;
+      } else {
+        bookingActionHtml = `
+          <div class="split-buttons-group">
+            <a href="${t.booking_url_out || t.booking_url}" target="_blank" rel="noopener noreferrer" class="cta-button btn-split-out">
+              1. Andata: ${outShort} (${t.price_out} €) →
+            </a>
+            <a href="${t.booking_url_in || t.booking_url}" target="_blank" rel="noopener noreferrer" class="cta-button btn-split-in">
+              2. Rientro: ${inShort} (${t.price_in} €) →
+            </a>
+          </div>
+        `;
+      }
+
       resultBox.innerHTML = `
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid #ded8cb; padding-bottom: 0.75rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid #ded8cb; padding-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
           <div>
-            <h3 style="color: #191817; font-size: 1.35rem; font-weight: 800;">Bergamo → ${t.dest_out_name} • Rientro da ${t.origin_in_name}</h3>
+            <h3 style="color: #191817; font-size: 1.35rem; font-weight: 800;">${titleText}</h3>
             <div style="color: #ea580c; font-weight: 700; margin-top: 0.3rem;">${outShort} → ${inShort} (${t.nights} notti)</div>
-            <div style="margin-top: 0.2rem;">
-              <span style="color: #c2410c; font-weight: 700;">${t.jaw_badge}: ${t.jaw_desc}</span> • 
-              <span style="color: #047857; font-weight: 700;">Solo Zainetto Gratuito</span>
+            <div style="margin-top: 0.2rem; display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center;">
+              <span style="background: #e0f2fe; color: #0369a1; padding: 0.2rem 0.5rem; font-size: 0.75rem; font-weight: 700;">${dirBadgeText}</span>
+              <span style="color: #c2410c; font-weight: 700; font-size: 0.85rem;">${t.jaw_badge}: ${t.jaw_desc}</span> • 
+              <span style="color: #047857; font-weight: 700; font-size: 0.85rem;">Solo Zainetto Gratuito</span>
             </div>
           </div>
           <div style="text-align: right;">
@@ -740,14 +896,12 @@ async function executeCustomSearch(e) {
         </div>
 
         <div style="background: #ffffff; padding: 1.15rem; border: 1px solid #ded8cb; margin-bottom: 1rem; font-size: 0.95rem;">
-          <div><strong>Andata:</strong> <span style="color: #1d4ed8; font-weight: 700;">${outDateFull}</span> • Ore ${t.time_out.includes(' ') ? t.time_out.split(' ')[1].substring(0, 5) : t.time_out} • Bergamo Orio → ${t.dest_out_name} • <strong>${t.price_out} €</strong></div>
-          <div style="margin-top: 0.5rem;"><strong>Rientro:</strong> <span style="color: #047857; font-weight: 700;">${inDateFull}</span> • Ore ${t.time_in.includes(' ') ? t.time_in.split(' ')[1].substring(0, 5) : t.time_in} • ${t.origin_in_name} → Bergamo Orio • <strong>${t.price_in} €</strong></div>
+          <div><strong>Andata:</strong> <span style="color: #1d4ed8; font-weight: 700;">${outDateFull}</span> • Ore ${t.time_out.includes(' ') ? t.time_out.split(' ')[1].substring(0, 5) : t.time_out} • ${legOutText} • <strong>${t.price_out} €</strong> (${t.flight_number_out})</div>
+          <div style="margin-top: 0.5rem;"><strong>Rientro:</strong> <span style="color: #047857; font-weight: 700;">${inDateFull}</span> • Ore ${t.time_in.includes(' ') ? t.time_in.split(' ')[1].substring(0, 5) : t.time_in} • ${legInText} • <strong>${t.price_in} €</strong> (${t.flight_number_in})</div>
         </div>
 
         <div class="card-actions">
-          <a href="${t.booking_url}" target="_blank" rel="noopener noreferrer" class="cta-button">
-            Prenota Volo da Bergamo (${outShort} → ${inShort}) • ${t.total_price} € →
-          </a>
+          ${bookingActionHtml}
           ${comparatorBtn}
         </div>
       `;
@@ -757,7 +911,7 @@ async function executeCustomSearch(e) {
     resultBox.style.display = 'block';
     resultBox.innerHTML = `<p style="color: #ef4444;">Errore di connessione al motore di ricerca.</p>`;
   } finally {
-    btn.textContent = 'Calcola Prezzo Volo da Bergamo →';
+    btn.textContent = isFromBgy ? 'Calcola Volo Bergamo → Spagna →' : 'Calcola Volo Spagna → Bergamo →';
     btn.disabled = false;
   }
 }

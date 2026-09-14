@@ -37,7 +37,9 @@ AIRPORT_NAMES = {
 
 AIRLINE_MAP = {
     "BGY-ALC": {"direct": ["Ryanair"], "monopoly": True, "notes": "Monopolio assoluto Ryanair da Bergamo Orio al Serio."},
-    "BGY-VLC": {"direct": ["Ryanair"], "monopoly": True, "notes": "Monopolio assoluto Ryanair da Bergamo Orio al Serio."}
+    "BGY-VLC": {"direct": ["Ryanair"], "monopoly": True, "notes": "Monopolio assoluto Ryanair da Bergamo Orio al Serio."},
+    "ALC-BGY": {"direct": ["Ryanair"], "monopoly": True, "notes": "Monopolio assoluto Ryanair da Alicante per Bergamo Orio."},
+    "VLC-BGY": {"direct": ["Ryanair"], "monopoly": True, "notes": "Monopolio assoluto Ryanair da Valencia per Bergamo Orio."}
 }
 
 def generate_date_pairs(weeks_ahead: int = 42) -> List[Dict[str, Any]]:
@@ -267,9 +269,11 @@ class FlightTracker:
         return output
 
     def custom_search(self, origin_out: str, dest_out: str, origin_in: str, dest_in: str, date_out: str, date_in: str) -> Optional[Dict[str, Any]]:
-        # Forza sempre Bergamo (BGY) come origine e destinazione lombarda
-        origin_out = "BGY"
-        dest_in = "BGY"
+        # Supporta sia Bergamo -> Spagna sia Spagna -> Bergamo (per Riky)
+        origin_out = (origin_out or "BGY").upper().strip()
+        dest_out = (dest_out or "ALC").upper().strip()
+        origin_in = (origin_in or "ALC").upper().strip()
+        dest_in = (dest_in or "BGY").upper().strip()
 
         f_out = self.fetch_single_leg(origin_out, dest_out, date_out)
         f_in = self.fetch_single_leg(origin_in, dest_in, date_in)
@@ -281,20 +285,36 @@ class FlightTracker:
         price_in = round(float(f_in.price), 2)
         total_price = round(price_out + price_in, 2)
 
-        spain_open = (dest_out != origin_in)
-
-        if not spain_open:
-            jaw_type = "classic"
-            jaw_badge = "A/R Stessa Città"
-            jaw_desc = f"Andata e Ritorno su {dest_out}"
-            is_pure_roundtrip = True
-            booking_url = get_booking_url(origin_out, dest_out, date_out, date_in, is_round_trip=True)
+        is_from_bgy = (origin_out == "BGY")
+        if is_from_bgy:
+            spain_open = (dest_out != origin_in)
+            if not spain_open:
+                jaw_type = "classic"
+                jaw_badge = "A/R Stessa Città"
+                jaw_desc = f"Andata e Ritorno su {dest_out}"
+                is_pure_roundtrip = True
+                booking_url = get_booking_url(origin_out, dest_out, date_out, date_in, is_round_trip=True)
+            else:
+                jaw_type = "open_jaw_spain"
+                jaw_badge = "Incrocio Spagna"
+                jaw_desc = f"Arrivo ad {dest_out}, ripartenza da {origin_in}"
+                is_pure_roundtrip = False
+                booking_url = get_booking_url(origin_out, dest_out, date_out, is_round_trip=False)
         else:
-            jaw_type = "open_jaw_spain"
-            jaw_badge = "Incrocio Spagna"
-            jaw_desc = f"Arrivo ad {dest_out}, ripartenza da {origin_in} (sempre BGY)"
-            is_pure_roundtrip = False
-            booking_url = get_booking_url(origin_out, dest_out, date_out, is_round_trip=False)
+            # Partenza dalla Spagna (es. ALC/VLC verso Bergamo e ritorno in Spagna)
+            spain_open = (origin_out != dest_in)
+            if not spain_open:
+                jaw_type = "classic"
+                jaw_badge = "A/R Spagna"
+                jaw_desc = f"Partenza e Rientro su {origin_out}"
+                is_pure_roundtrip = True
+                booking_url = get_booking_url(origin_out, dest_out, date_out, date_in, is_round_trip=True)
+            else:
+                jaw_type = "open_jaw_spain"
+                jaw_badge = "Incrocio Spagna"
+                jaw_desc = f"Partenza da {origin_out}, rientro a {dest_in}"
+                is_pure_roundtrip = False
+                booking_url = get_booking_url(origin_out, dest_out, date_out, is_round_trip=False)
 
         booking_url_out = get_booking_url(origin_out, dest_out, date_out, is_round_trip=False)
         booking_url_in = get_booking_url(origin_in, dest_in, date_in, is_round_trip=False)
@@ -305,9 +325,10 @@ class FlightTracker:
         nights = (d_in_dt - d_out_dt).days
 
         route_key = f"{origin_out}-{dest_out}"
-        airline_info = AIRLINE_MAP.get(route_key, {"direct": ["Ryanair"], "monopoly": True, "notes": "Monopolio Ryanair da Bergamo"})
+        airline_info = AIRLINE_MAP.get(route_key, {"direct": ["Ryanair"], "monopoly": True, "notes": "Volo diretto Ryanair"})
 
         return {
+            "direction": "BGY_TO_ES" if is_from_bgy else "ES_TO_BGY",
             "origin_out": origin_out,
             "origin_out_name": AIRPORT_NAMES.get(origin_out, origin_out),
             "dest_out": dest_out,
@@ -330,7 +351,7 @@ class FlightTracker:
             "jaw_badge": jaw_badge,
             "jaw_desc": jaw_desc,
             "is_pure_roundtrip": is_pure_roundtrip,
-            "operating_airlines": airline_info["direct"],
+            "operating_airlines": airline_info.get("direct", ["Ryanair"]),
             "pattern_badge": f"Soggiorno {nights} notti",
             "booking_url": booking_url,
             "booking_url_out": booking_url_out,

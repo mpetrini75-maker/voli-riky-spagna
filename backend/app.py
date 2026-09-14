@@ -90,8 +90,8 @@ def force_refresh():
 
 @app.post("/api/custom-search")
 def custom_search(req: CustomSearchRequest):
-    """Ricerca personalizzata per date specifiche con partenza e rientro da Bergamo."""
-    res = tracker.custom_search("BGY", req.dest_out, req.origin_in, "BGY", req.date_out, req.date_in)
+    """Ricerca personalizzata per date specifiche con supporto bidirezionale (Bergamo <-> Spagna)."""
+    res = tracker.custom_search(req.origin_out, req.dest_out, req.origin_in, req.dest_in, req.date_out, req.date_in)
     if not res:
         return {"found": False, "message": "Nessun volo Ryanair trovato per le date selezionate."}
     return {"found": True, "trip": res}
