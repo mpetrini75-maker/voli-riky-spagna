@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voli Riky Spagna — Low-Cost Flight Tracker (Bergamo Orio al Serio)</title>
+  <meta name="description" content="Piattaforma di monitoraggio voli low-cost per raggiungere Riky in Spagna. Rotte esclusive da Bergamo Orio al Serio (BGY) verso Alicante (ALC) e Valencia (VLC). Supporto combinazioni classiche e Open-Jaw in Spagna.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=7.0">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="hero-header">
+      <div class="hero-content">
+        <div class="badge-pill">
+          <span class="pulse-dot"></span>
+          <span>Tavola Rotonda • Esclusivo Bergamo Orio (BGY)</span>
+        </div>
+        <h1 class="main-title">Raggiungi Riky <span>in Spagna</span></h1>
+        <p class="subtitle">
+          Monitoraggio continuo tariffe: <strong>Bergamo Orio al Serio (BGY) ⇄ Alicante (ALC) & Valencia (VLC)</strong><br>
+          Tratte dirette Ryanair • Combinazioni classiche e incrociate in Spagna • <strong>Solo zainetto gratuito, zero costi extra!</strong>
+        </p>
+
+        <!-- KPI Strip -->
+        <div class="kpi-grid">
+          <div class="kpi-card highlight-card">
+            <span class="kpi-label">Miglior Prezzo A/R</span>
+            <span class="kpi-value" id="kpi-cheapest">-- €</span>
+            <span class="kpi-sub">Andata + Ritorno finito</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Aeroporto Partenza</span>
+            <span class="kpi-value">Bergamo BGY</span>
+            <span class="kpi-sub">Esclusivo • Monopolio Ryanair</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Tariffe d'Oro (&lt; 45 €)</span>
+            <span class="kpi-value" id="kpi-gold-count">--</span>
+            <span class="kpi-sub">Super occasioni weekend</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Regola Bagaglio</span>
+            <span class="kpi-value">Solo Zaino</span>
+            <span class="kpi-sub">Zero costi aggiuntivi</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+      <button class="tab-btn active" id="tab-btn-deals" onclick="switchTab('deals')">
+        Tutte le Offerte (<span id="tab-count-deals">0</span>)
+      </button>
+      <button class="tab-btn" id="tab-btn-airlines" onclick="switchTab('airlines')">
+        Radar Bergamo & Compagnie
+      </button>
+      <button class="tab-btn" id="tab-btn-holidays" onclick="switchTab('holidays')">
+        Calendario Ponti & Ferie
+      </button>
+      <button class="tab-btn" id="tab-btn-custom" onclick="switchTab('custom')">
+        Calcolatore Date Libere
+      </button>
+      <button class="refresh-action-btn" id="btn-refresh" onclick="refreshData()" title="Aggiorna prezzi in tempo reale con API Ryanair">
+        <span class="refresh-icon">↻</span> Aggiorna Prezzi
+      </button>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="content-body">
+      <!-- SECTION 1: DEALS LIST & FILTERS -->
+      <section id="section-deals" class="tab-section active">
+        <!-- Filter Controls -->
+        <div class="filter-panel glass-box">
+          <!-- Pattern Filter -->
+          <div class="filter-group">
+            <label class="filter-title">Pattern di Viaggio:</label>
+            <div class="pill-group" id="pattern-pills">
+              <button class="pill active" data-pattern="all">Tutti i Giorni</button>
+              <button class="pill" data-pattern="weekend_standard">Weekend (Ven–Dom)</button>
+              <button class="pill" data-pattern="weekend_lungo">Weekend Lungo (Gio–Lun)</button>
+              <button class="pill" data-pattern="ponte">Ponti Festivi</button>
+            </div>
+          </div>
+
+          <!-- Open-Jaw Filter -->
+          <div class="filter-group" style="margin-top: 0.5rem;">
+            <label class="filter-title">Destinazione Spagna (Aeroporti):</label>
+            <div class="pill-group" id="jaw-pills">
+              <button class="pill active" data-jaw="all">Tutte le Combinazioni</button>
+              <button class="pill" data-jaw="classic">Solo Classico (Stessa Città)</button>
+              <button class="pill" data-jaw="spain">Incrocio Spagna (ALC ⇄ VLC)</button>
+            </div>
+          </div>
+
+          <div class="filter-row" style="margin-top: 1rem;">
+            <div class="filter-group">
+              <label class="filter-title" for="route-select">Tratta di Andata:</label>
+              <select id="route-select" class="custom-select" onchange="applyFilters()">
+                <option value="all">Tutte le rotte (Alicante o Valencia)</option>
+                <option value="BGY-ALC">Bergamo → Alicante (Principale)</option>
+                <option value="BGY-VLC">Bergamo → Valencia</option>
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <label class="filter-title" for="month-select">Mese:</label>
+              <select id="month-select" class="custom-select" onchange="applyFilters()">
+                <option value="all">Tutti i mesi disponibili</option>
+                <option value="2026-09">Settembre 2026</option>
+                <option value="2026-10">Ottobre 2026</option>
+                <option value="2026-11">Novembre 2026</option>
+                <option value="2026-12">Dicembre 2026</option>
+                <option value="2027-01">Gennaio 2027</option>
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <label class="filter-title" for="sort-select">Ordina per:</label>
+              <select id="sort-select" class="custom-select" onchange="applyFilters()">
+                <option value="price">Prezzo più basso prima</option>
+                <option value="date">Data più vicina prima</option>
+              </select>
+            </div>
+
+            <div class="filter-group budget-filter">
+              <div class="budget-header">
+                <label class="filter-title" for="budget-slider">Budget Massimo A/R:</label>
+                <span id="budget-display" class="budget-value">120 €</span>
+              </div>
+              <input type="range" id="budget-slider" class="range-slider" min="30" max="250" step="5" value="120" oninput="updateBudget(this.value)">
+            </div>
+          </div>
+        </div>
+
+        <!-- Flights Grid -->
+        <div class="flights-grid" id="flights-container">
+          <!-- Popolato via Javascript -->
+        </div>
+      </section>
+
+      <!-- SECTION 2: AIRLINE RADAR & AIRPORT MARKET (BERGAMO FOCUS) -->
+      <section id="section-airlines" class="tab-section">
+        <div class="radar-intro glass-box">
+          <h2>Radar Mercato: Bergamo Orio al Serio (BGY)</h2>
+          <p>
+            Mappatura strategica delle rotte per raggiungere Riky da Bergamo. 
+            Come richiesto, <strong>Malpensa e Linate sono stati completamente esclusi</strong> per comodità logistica e tempi di trasferimento.
+          </p>
+        </div>
+
+        <div class="radar-grid">
+          <!-- Bergamo ALC -->
+          <div class="radar-card highlight-border">
+            <div class="radar-badge">Tratta Principale</div>
+            <h3>Bergamo (BGY) ⇄ Alicante (ALC)</h3>
+            <p class="radar-desc">
+              <strong>Monopolio Assoluto Ryanair.</strong> Nessun'altra compagnia vola diretta su questa tratta.
+            </p>
+            <div class="radar-stats">
+              <div><strong>Frequenza:</strong> Giornaliera (fino a 10 voli settimanali).</div>
+              <div><strong>Tariffa Minima Registrata:</strong> 14,99 € a tratta.</div>
+              <div><strong>Durata Volo:</strong> 2h 15min.</div>
+              <div style="margin-top: 0.4rem; color: #10b981;"><strong>Verdetto:</strong> La combinazione più economica e affidabile in assoluto.</div>
+            </div>
+          </div>
+
+          <!-- Bergamo VLC -->
+          <div class="radar-card">
+            <div class="radar-badge">Alternativa Diretta</div>
+            <h3>Bergamo (BGY) ⇄ Valencia (VLC)</h3>
+            <p class="radar-desc">
+              <strong>Monopolio Assoluto Ryanair.</strong> Tratta comoda per raggiungere Valencia o per combinazioni aperte Open-Jaw (arrivo ad ALC e rientro da VLC).
+            </p>
+            <div class="radar-stats">
+              <div><strong>Frequenza:</strong> Giornaliera (7-9 voli a settimana).</div>
+              <div><strong>Tariffa Minima Registrata:</strong> 14,99 € - 17,99 € a tratta.</div>
+              <div><strong>Durata Volo:</strong> 2h 10min.</div>
+              <div style="margin-top: 0.4rem; color: #38bdf8;"><strong>Verdetto:</strong> Perfetta per alternare o incrociare le città.</div>
+            </div>
+          </div>
+
+          <!-- Politica Zero Malpensa -->
+          <div class="radar-card" style="opacity: 0.85;">
+            <div class="radar-badge" style="background: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.4); color: #f87171;">Esclusi dal Filtro</div>
+            <h3>Malpensa (MXP) & Linate (LIN)</h3>
+            <p class="radar-desc">
+              Disattivati permanentemente dal radar su tua indicazione.
+            </p>
+            <div class="radar-stats">
+              <div><strong>Motivo:</strong> Distanza e logistica sfavorevole rispetto a Orio al Serio.</div>
+              <div><strong>Linate:</strong> Zero voli diretti, solo scali a oltre 200 € A/R.</div>
+              <div><strong>Malpensa:</strong> Tariffe EasyJet e Wizz Air non competitive sul prezzo finito.</div>
+              <div style="margin-top: 0.4rem; color: #9ca3af;"><strong>Stato:</strong> Filtro bloccato su 100% Bergamo.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 3: HOLIDAYS & BRIDGES -->
+      <section id="section-holidays" class="tab-section">
+        <div class="holidays-intro glass-box">
+          <h2>Calendario Ponti Festivi da Bergamo per Raggiungere Riky</h2>
+          <p>
+            Incrocio automatico delle festività con i voli da Bergamo (BGY) per ottimizzare le tue giornate in Spagna 
+            consumando il minimo di ferie possibile!
+          </p>
+        </div>
+        <div class="holidays-grid" id="holidays-container">
+          <!-- Popolato via Javascript -->
+        </div>
+      </section>
+
+      <!-- SECTION 4: CUSTOM VACATION CALCULATOR -->
+      <section id="section-custom" class="tab-section">
+        <div class="custom-intro glass-box">
+          <h2>Calcolatore Date Libere (Partenza & Rientro a Bergamo)</h2>
+          <p>Imposta qualsiasi data per calcolare il volo da Bergamo verso Alicante o Valencia:</p>
+
+          <form id="custom-search-form" class="custom-form" onsubmit="executeCustomSearch(event)">
+            <div class="form-grid-custom">
+              <!-- Andata -->
+              <div class="form-group">
+                <label for="custom-orig-out">Partenza (Andata):</label>
+                <select id="custom-orig-out" class="custom-select" disabled>
+                  <option value="BGY" selected>Bergamo Orio al Serio (BGY)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="custom-dest-out">Arrivo in Spagna:</label>
+                <select id="custom-dest-out" class="custom-select">
+                  <option value="ALC" selected>Alicante (ALC)</option>
+                  <option value="VLC">Valencia (VLC)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="custom-date-out">Data Andata:</label>
+                <input type="date" id="custom-date-out" class="custom-input" required>
+                <div id="custom-date-out-hint" class="input-date-hint">Andata: Giovedì 29 Ott 2026</div>
+              </div>
+
+              <!-- Ritorno -->
+              <div class="form-group">
+                <label for="custom-orig-in">Ripartenza dalla Spagna:</label>
+                <select id="custom-orig-in" class="custom-select">
+                  <option value="ALC">Alicante (ALC)</option>
+                  <option value="VLC" selected>Valencia (VLC)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="custom-dest-in">Rientro (Destinazione):</label>
+                <select id="custom-dest-in" class="custom-select" disabled>
+                  <option value="BGY" selected>Bergamo Orio al Serio (BGY)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="custom-date-in">Data Rientro:</label>
+                <input type="date" id="custom-date-in" class="custom-input" required>
+                <div id="custom-date-in-hint" class="input-date-hint">Rientro: Lunedì 2 Nov 2026</div>
+              </div>
+            </div>
+
+            <!-- Calendario Grafico Interattivo -->
+            <div class="calendar-wrapper">
+              <!-- Selezioni Rapide Presets -->
+              <div class="calendar-presets">
+                <span class="calendar-presets-label">Selezioni Rapide:</span>
+                <button type="button" class="preset-pill" onclick="selectCalPreset('next_weekend')">Weekend (Ven–Dom)</button>
+                <button type="button" class="preset-pill" onclick="selectCalPreset('long_weekend')">Weekend Lungo (Gio–Lun)</button>
+                <button type="button" class="preset-pill" onclick="selectCalPreset('ognissanti')">Tutti i Santi (29 Ott – 2 Nov)</button>
+                <button type="button" class="preset-pill" onclick="selectCalPreset('immacolata')">Immacolata (4 – 8 Dic)</button>
+                <button type="button" class="preset-pill" onclick="selectCalPreset('natale')">Natale (24 – 28 Dic)</button>
+              </div>
+
+              <!-- Navigazione Mese -->
+              <div class="calendar-header">
+                <button type="button" class="calendar-nav-btn" onclick="changeCalendarMonth(-1)">← Mese Prec.</button>
+                <div class="calendar-month-title" id="calendar-month-title">
+                  <!-- Generato via JS: es. Ottobre 2026 -->
+                </div>
+                <button type="button" class="calendar-nav-btn" onclick="changeCalendarMonth(1)">Mese Succ. →</button>
+              </div>
+
+              <!-- Griglia Giorni Calendario -->
+              <div class="calendar-grid" id="calendar-grid">
+                <!-- Generato via JS -->
+              </div>
+
+              <!-- Riepilogo Selezione -->
+              <div class="calendar-summary-bar">
+                <div class="cal-selected-info">
+                  <div class="cal-pill-tag out">
+                    <span>Andata:</span>
+                    <strong id="cal-summary-out">Seleziona data</strong>
+                  </div>
+                  <div class="cal-pill-tag in">
+                    <span>Rientro:</span>
+                    <strong id="cal-summary-in">Seleziona data</strong>
+                  </div>
+                  <div class="cal-pill-tag nights">
+                    
+                    <span id="cal-summary-nights">0 notti</span>
+                  </div>
+                </div>
+                <div style="font-size: 0.82rem; color: #9ca3af;">
+                  Seleziona il giorno di <strong>Andata</strong> e poi il giorno di <strong>Rientro</strong>.
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 1.5rem; text-align: right;">
+              <button type="submit" class="cta-button" id="btn-search-custom" style="display: inline-flex; width: auto; padding: 0.85rem 2.25rem;">
+                Calcola Prezzo Volo da Bergamo →
+              </button>
+            </div>
+          </form>
+
+          <div id="custom-result" class="custom-result-box" style="display: none;">
+            <!-- Popolato via Javascript -->
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>
+        Tavola Rotonda • Sviluppato per Marco & Riky • Esclusivo <strong>Bergamo Orio al Serio (BGY)</strong> • 
+        Regola aurea: <strong>Solo Zainetto, Zero Extra</strong>
+      </p>
+    </footer>
+  </div>
+
+  <script src="js/app.js?v=7.0"></script>
+</body>
+</html>

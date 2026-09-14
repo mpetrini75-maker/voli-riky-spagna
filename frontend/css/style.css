@@ -1,0 +1,966 @@
+:root {
+  /* ==========================================================================
+     LIVREA TAVOLA ROTONDA: "LUCE DEL MEDITERRANEO" & GEOMETRIA SQUADRATA
+     Stile: Editorial Travel / Swiss Precision (Zero Angoli Stondati)
+     ========================================================================== */
+  
+  /* Palette Colori: Carta calda, inchiostro profondo, accenti iberici */
+  --bg-page: #f7f5ef;             /* Sabbia chiarissima / Carta avorio calda */
+  --bg-surface: #ffffff;          /* Bianco puro per card e blocchi */
+  --bg-surface-subtle: #eeece4;   /* Sfondo grigio sabbia per contrasti */
+  --bg-surface-hover: #faf9f5;
+  
+  --border-color: #ded8cb;        /* Linea architettonica sottile */
+  --border-dark: #191817;         /* Nero inchiostro per contrasti netti */
+  --border-accent: #c2410c;       /* Terracotta spagnola */
+  
+  --text-main: #191817;           /* Inchiostro carbone ad altissima leggibilità */
+  --text-muted: #57534e;          /* Grigio pietra caldo */
+  --text-dim: #78716c;            /* Dettagli secondari */
+  
+  /* Accenti di Viaggio & Spagna */
+  --accent-spain: #ea580c;        /* Terracotta viva / Sole iberico */
+  --accent-spain-hover: #c2410c;
+  --accent-gold: #b45309;         /* Ambra caldo per tariffe d'oro */
+  --accent-gold-bg: #fef3c7;
+  --accent-success: #047857;      /* Verde smeraldo naturale per prezzi e risparmio */
+  --accent-success-bg: #ecfdf5;
+  --accent-flight: #1d4ed8;       /* Blu aviazione classico */
+  --accent-flight-bg: #eff6ff;
+
+  /* GEOMETRIA RIGOROSAMENTE SQUADRATA (Richiesta di Marco: Zero Stondature) */
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  
+  --shadow-subtle: 0 4px 16px rgba(25, 24, 23, 0.04), 0 1px 3px rgba(25, 24, 23, 0.03);
+  --shadow-hover: 0 8px 24px rgba(25, 24, 23, 0.08), 0 2px 6px rgba(25, 24, 23, 0.04);
+  --transition: all 0.15s ease-in-out;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border-radius: 0 !important; /* Forza geometria squadrata su ogni elemento */
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-page);
+  color: var(--text-main);
+  background-image: 
+    linear-gradient(to right, rgba(222, 216, 203, 0.25) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(222, 216, 203, 0.25) 1px, transparent 1px);
+  background-size: 40px 40px;
+  min-height: 100vh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 5rem;
+}
+
+/* Riquadri Stile Manifesto / Carta Editoriale */
+.glass-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-subtle);
+}
+
+/* ==========================================================================
+   Hero Header
+   ========================================================================== */
+.hero-header {
+  margin-bottom: 2.5rem;
+  text-align: center;
+  position: relative;
+  padding: 1rem 0;
+  border-bottom: 2px solid var(--border-dark);
+}
+
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--border-dark);
+  color: #ffffff;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 1.25rem;
+  border: 1px solid var(--border-dark);
+}
+
+.pulse-dot {
+  width: 7px;
+  height: 7px;
+  background-color: #f59e0b;
+}
+
+.main-title {
+  font-size: 3.2rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  margin-bottom: 0.75rem;
+  color: var(--text-main);
+}
+
+.main-title span {
+  color: var(--accent-spain);
+  border-bottom: 3px solid var(--accent-spain);
+  padding-bottom: 2px;
+}
+
+.subtitle {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  max-width: 820px;
+  margin: 0 auto 2.25rem;
+}
+
+.subtitle strong {
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   KPI Strip: Blocchi Architettonici
+   ========================================================================== */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0;
+  max-width: 1080px;
+  margin: 0 auto 1.5rem;
+  border: 1px solid var(--border-dark);
+  background: var(--bg-surface);
+}
+
+.kpi-card {
+  padding: 1.25rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-right: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  transition: var(--transition);
+}
+
+.kpi-card:last-child {
+  border-right: none;
+}
+
+.kpi-card:hover {
+  background: var(--bg-surface-subtle);
+}
+
+.kpi-card.highlight-card {
+  background: #fdfaf3;
+  border-top: 3px solid var(--accent-spain);
+}
+
+.kpi-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.kpi-value {
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+}
+
+.highlight-card .kpi-value {
+  color: var(--accent-spain);
+}
+
+.kpi-sub {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
+}
+
+/* ==========================================================================
+   Navigation Tabs: Linguette Geometriche
+   ========================================================================== */
+.nav-tabs {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-bottom: 2px solid var(--border-dark);
+  padding: 0;
+  margin-bottom: 2rem;
+  overflow-x: auto;
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  border-right: 1px solid var(--border-color);
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 700;
+  padding: 0.85rem 1.35rem;
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.tab-btn:hover {
+  color: var(--text-main);
+  background: var(--bg-surface-subtle);
+}
+
+.tab-btn.active {
+  background: var(--border-dark);
+  color: #ffffff;
+}
+
+.refresh-action-btn {
+  margin-left: auto;
+  background: var(--accent-spain);
+  border: none;
+  border-left: 1px solid var(--border-color);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.85rem 1.25rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  transition: var(--transition);
+}
+
+.refresh-action-btn:hover {
+  background: var(--accent-spain-hover);
+}
+
+.refresh-icon.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   Filtri & Pannello Opzioni
+   ========================================================================== */
+.filter-panel {
+  padding: 1.75rem;
+  margin-bottom: 2rem;
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface);
+}
+
+.filter-title {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--text-dim);
+  margin-bottom: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.pill-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.85rem;
+}
+
+.pill {
+  background: var(--bg-surface-subtle);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.45rem 0.95rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.pill:hover {
+  background: #e6e3da;
+  border-color: #c4beb1;
+}
+
+.pill.active {
+  background: var(--border-dark);
+  border-color: var(--border-dark);
+  color: #ffffff;
+}
+
+.filter-row {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 1.5fr 2fr;
+  gap: 1.25rem;
+  align-items: end;
+}
+
+@media (max-width: 960px) {
+  .filter-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.custom-select, .custom-input {
+  width: 100%;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 0.92rem;
+  padding: 0.65rem 0.85rem;
+  outline: none;
+  transition: var(--transition);
+}
+
+.custom-select:focus, .custom-input:focus {
+  border-color: var(--border-dark);
+  box-shadow: 0 0 0 1px var(--border-dark);
+}
+
+.budget-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.budget-val {
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  color: var(--accent-spain);
+  font-size: 1.05rem;
+}
+
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--accent-spain);
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   Flight Cards: Schede Volo Strutturate & Tagliate a 90°
+   ========================================================================== */
+.flights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 1.5rem;
+}
+
+.flight-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+  transition: var(--transition);
+  position: relative;
+  box-shadow: var(--shadow-subtle);
+}
+
+.flight-card:hover {
+  border-color: var(--border-dark);
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+}
+
+.flight-card.tier-gold {
+  border-top: 4px solid var(--accent-spain);
+}
+
+.flight-card.tier-silver {
+  border-top: 4px solid var(--accent-success);
+}
+
+/* Card Header */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.85rem;
+}
+
+.route-info h3 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 0.25rem;
+  letter-spacing: -0.02em;
+}
+
+.route-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  background: var(--accent-gold-bg);
+  border: 1px solid #fde68a;
+  color: var(--accent-gold);
+  text-transform: uppercase;
+}
+
+.price-box {
+  text-align: right;
+}
+
+.total-price {
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  font-size: 2.1rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--text-main);
+  letter-spacing: -0.03em;
+}
+
+.flight-card.tier-gold .total-price {
+  color: var(--accent-spain);
+}
+
+.flight-card.tier-silver .total-price {
+  color: var(--accent-success);
+}
+
+.price-note {
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0.2rem;
+}
+
+/* Flight Details Legs */
+.legs-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  background: var(--bg-surface-subtle);
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+}
+
+.leg {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.leg-icon {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+}
+
+.leg-details {
+  flex: 1;
+  margin-left: 0.75rem;
+}
+
+.leg-date {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.leg-time {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.leg-price {
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+/* Card Badges */
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.tag {
+  font-size: 0.72rem;
+  padding: 0.25rem 0.6rem;
+  font-weight: 700;
+  border: 1px solid transparent;
+}
+
+.tag-clean {
+  background: var(--accent-success-bg);
+  border-color: #a7f3d0;
+  color: var(--accent-success);
+}
+
+.tag-holiday {
+  background: var(--accent-gold-bg);
+  border-color: #fde68a;
+  color: var(--accent-gold);
+}
+
+.tag-pattern {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #334155;
+}
+
+.tag-jaw {
+  background: #fff7ed;
+  border-color: #fed7aa;
+  color: #c2410c;
+}
+
+/* Card Action Button */
+.card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cta-button {
+  background: var(--accent-spain);
+  border: 1px solid var(--accent-spain);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 0.85rem 1.25rem;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 4px rgba(234, 88, 12, 0.2);
+}
+
+.cta-button:hover {
+  background: var(--accent-spain-hover);
+  border-color: var(--accent-spain-hover);
+  box-shadow: 0 4px 10px rgba(234, 88, 12, 0.3);
+}
+
+.secondary-button {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: var(--transition);
+}
+
+.secondary-button:hover {
+  background: var(--bg-surface-subtle);
+  color: var(--text-main);
+  border-color: var(--border-dark);
+}
+
+/* ==========================================================================
+   Radar Compagnie & Mercato
+   ========================================================================== */
+.radar-intro, .holidays-intro, .custom-intro {
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.radar-intro h2, .holidays-intro h2, .custom-intro h2 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  color: var(--text-main);
+}
+
+.airline-radar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.radar-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  padding: 1.5rem;
+}
+
+.radar-card h3 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin-bottom: 0.75rem;
+  color: var(--text-main);
+}
+
+.radar-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.radar-table th, .radar-table td {
+  padding: 0.75rem 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+  text-align: left;
+  font-size: 0.88rem;
+}
+
+.radar-table th {
+  font-weight: 800;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  background: var(--bg-surface-subtle);
+}
+
+/* ==========================================================================
+   Ponti e Ferie
+   ========================================================================== */
+.holidays-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1.5rem;
+}
+
+.holiday-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.holiday-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--accent-spain);
+}
+
+.holiday-card h3 {
+  font-size: 1.3rem;
+  font-weight: 800;
+}
+
+.holiday-desc {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.holiday-dates {
+  background: var(--bg-surface-subtle);
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--text-main);
+}
+
+/* ==========================================================================
+   Calcolatore Date Libere & Calendario Grafico Squadrato
+   ========================================================================== */
+.form-grid-custom {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .form-grid-custom {
+    grid-template-columns: 1fr;
+  }
+}
+
+.input-date-hint {
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-top: 0.35rem;
+  color: var(--accent-spain);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.custom-result-box {
+  margin-top: 2rem;
+  padding: 1.75rem;
+  background: var(--bg-surface-subtle);
+  border: 2px solid var(--border-dark);
+}
+
+/* Calendario a Scacchiera Geometrica */
+.calendar-wrapper {
+  margin-top: 1.75rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  padding: 1.5rem;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.75rem;
+}
+
+.calendar-nav-btn {
+  background: var(--bg-surface-subtle);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.85rem;
+  transition: var(--transition);
+}
+
+.calendar-nav-btn:hover {
+  background: var(--border-dark);
+  color: #ffffff;
+  border-color: var(--border-dark);
+}
+
+.calendar-month-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+}
+
+.calendar-presets {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+  align-items: center;
+}
+
+.calendar-presets-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-right: 0.4rem;
+}
+
+.preset-pill {
+  background: var(--bg-surface-subtle);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 0.4rem 0.8rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.preset-pill:hover {
+  background: var(--border-dark);
+  color: #ffffff;
+  border-color: var(--border-dark);
+}
+
+/* Griglia Calendario Squadrata */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  background: var(--border-color);
+  border: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.cal-day-header {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--text-main);
+  padding: 0.65rem 0;
+  text-transform: uppercase;
+  background: var(--bg-surface-subtle);
+  letter-spacing: 0.05em;
+}
+
+.cal-day-header.weekend {
+  color: var(--accent-spain);
+  background: #fef7ee;
+}
+
+.cal-cell {
+  min-height: 52px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  position: relative;
+  user-select: none;
+  background: var(--bg-surface);
+  border: 1px solid transparent;
+  color: var(--text-main);
+  transition: var(--transition);
+}
+
+.cal-cell:hover:not(.disabled):not(.empty) {
+  background: #fdf3e7;
+  border-color: var(--accent-spain);
+  z-index: 2;
+}
+
+.cal-cell.empty {
+  cursor: default;
+  background: var(--bg-surface-subtle);
+}
+
+.cal-cell.weekend {
+  background: #fffcf8;
+  color: var(--accent-spain);
+}
+
+.cal-cell.disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+  background: #f5f4ef;
+}
+
+.cal-cell.selected-out {
+  background: var(--accent-flight) !important;
+  color: #ffffff !important;
+  font-weight: 800;
+  border-color: var(--accent-flight) !important;
+  z-index: 3;
+}
+
+.cal-cell.selected-in {
+  background: var(--accent-success) !important;
+  color: #ffffff !important;
+  font-weight: 800;
+  border-color: var(--accent-success) !important;
+  z-index: 3;
+}
+
+.cal-cell.in-range {
+  background: #fef3c7 !important;
+  color: #92400e !important;
+}
+
+.cal-cell-badge {
+  font-size: 0.65rem;
+  line-height: 1;
+  margin-top: 3px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.calendar-summary-bar {
+  margin-top: 1.25rem;
+  padding: 1rem 1.25rem;
+  background: var(--bg-surface-subtle);
+  border: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.cal-selected-info {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.cal-pill-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+.cal-pill-tag.out {
+  color: var(--accent-flight);
+}
+
+.cal-pill-tag.in {
+  color: var(--accent-success);
+}
+
+.cal-pill-tag.nights {
+  color: #92400e;
+  background: #fef3c7;
+  padding: 0.25rem 0.65rem;
+  border: 1px solid #fde68a;
+}
+
+/* ==========================================================================
+   Footer & Utility Tabs
+   ========================================================================== */
+.app-footer {
+  text-align: center;
+  margin-top: 5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-color);
+  color: var(--text-dim);
+  font-size: 0.85rem;
+}
+
+.app-footer strong {
+  color: var(--text-main);
+}
+
+.tab-section {
+  display: none;
+}
+.tab-section.active {
+  display: block;
+}
