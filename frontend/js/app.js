@@ -310,28 +310,90 @@ function renderCalendar() {
   gridEl.innerHTML = html;
 }
 
-// Caricamento dati iniziali dal server
+// Caricamento dati iniziali con doppio canale (Live API + Fallback statico istantaneo)
 async function loadData() {
-  try {
-    const res = await fetch('/api/flights');
-    if (!res.ok) throw new Error('Errore nel recupero dei voli');
-    const data = await res.json();
-
-    allTrips = data.trips || [];
-    allHolidays = data.holidays || [];
-
-    updateKPIs(data.stats);
-    renderHolidays(allHolidays);
-    applyFilters();
-  } catch (err) {
-    console.error('Errore API:', err);
-    document.getElementById('flights-container').innerHTML = `
-      <div class="glass-box" style="grid-column: 1/-1; padding: 2rem; text-align: center;">
-        <p style="color: #ef4444; font-weight: 600;">Impossibile caricare i dati dei voli.</p>
-        <p style="color: #9ca3af; margin-top: 0.5rem;">Verifica che il server backend sia attivo su porta 8000.</p>
+  const container = document.getElementById('flights-container');
+  if (container && allTrips.length === 0) {
+    container.innerHTML = `
+      <div style="grid-column: 1/-1; padding: 2.5rem; text-align: center; background: #ffffff; border: 1px solid #ded8cb;">
+        <p style="font-size: 1.1rem; color: #191817; font-weight: 700; margin-bottom: 0.4rem;">
+          Caricamento delle migliori offerte da Bergamo (BGY)...
+        </p>
+        <p style="color: #64748b; font-size: 0.88rem;">Analisi tariffe Ryanair per Alicante e Valencia...</p>
       </div>
     `;
   }
+
+  let loaded = false;
+
+  try {
+    const staticPromise = fetch('data/flights.json').then(r => r.ok ? r.json() : null).catch(() => null);
+    const livePromise = fetch('/api/flights').then(r => r.ok ? r.json() : null).catch(() => null);
+
+    // Usa il primo che risponde
+    const firstData = await Promise.race([livePromise, staticPromise]);
+    if (firstData && firstData.trips && firstData.trips.length > 0) {
+      applyFlightData(firstData);
+      loaded = true;
+    }
+
+    // Se il live risponde dopo con dati freschi, aggiorna
+    livePromise.then(liveData => {
+      if (liveData && liveData.trips && liveData.trips.length > 0) {
+        applyFlightData(liveData);
+      }
+    });
+
+    if (!loaded) {
+      const fallback = await staticPromise;
+      if (fallback && fallback.trips && fallback.trips.length > 0) {
+        applyFlightData(fallback);
+        loaded = true;
+      }
+    }
+  } catch (err) {
+    console.warn('Errore primo canale, tentativo fallback statico...', err);
+  }
+
+  if (!loaded) {
+    try {
+      const res = await fetch('data/flights.json');
+      if (res.ok) {
+        const data = await res.json();
+        applyFlightData(data);
+        loaded = true;
+      }
+    } catch (e) {
+      console.error('Fallback fallito:', e);
+    }
+  }
+
+  if (!loaded && allTrips.length === 0) {
+    if (container) {
+      container.innerHTML = `
+        <div style="grid-column: 1/-1; padding: 2.5rem; text-align: center; background: #ffffff; border: 1px solid #ded8cb;">
+          <p style="color: #dc2626; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem;">
+            Connessione al server in corso...
+          </p>
+          <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 1.25rem;">
+            Il server cloud si sta risvegliando. Fai clic su Riprova tra pochi istanti.
+          </p>
+          <button onclick="loadData()" class="cta-button" style="width: auto; padding: 0.75rem 2rem; display: inline-block;">
+            Riprova Ora ↻
+          </button>
+        </div>
+      `;
+    }
+  }
+}
+
+function applyFlightData(data) {
+  if (!data || !data.trips) return;
+  allTrips = data.trips;
+  allHolidays = data.holidays || [];
+  updateKPIs(data.stats);
+  renderHolidays(allHolidays);
+  applyFilters();
 }
 
 // Aggiornamento KPI in testata
@@ -411,9 +473,9 @@ function renderFlights(trips) {
 
   if (trips.length === 0) {
     container.innerHTML = `
-      <div class="glass-box" style="grid-column: 1/-1; padding: 3rem; text-align: center;">
-        <p style="font-size: 1.2rem; color: #f3f4f6; margin-bottom: 0.5rem;">Nessuna combinazione trovata da Bergamo con i filtri attuali.</p>
-        <p style="color: #9ca3af;">Prova ad alzare il budget massimo o a selezionare "Tutti i giorni".</p>
+      <div style="grid-column: 1/-1; padding: 2.5rem; text-align: center; background: #ffffff; border: 1px solid #ded8cb;">
+        <p style="font-size: 1.15rem; color: #191817; font-weight: 800; margin-bottom: 0.5rem;">Nessuna combinazione trovata da Bergamo con i filtri attuali.</p>
+        <p style="color: #64748b; font-size: 0.9rem;">Prova ad alzare il budget massimo o a selezionare "Tutti i giorni".</p>
       </div>
     `;
     return;
